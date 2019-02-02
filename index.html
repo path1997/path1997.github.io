@@ -534,7 +534,7 @@
 		var loader = new THREE.GLTFLoader();
 
         loader.load( 'models/lozko/scene.gltf', function ( gltf ) {
-			gltf.scene.position.y-=50;
+			gltf.scene.position.y-=52;
 			gltf.scene.position.z+=130;
 			gltf.scene.scale.set(2,2,2);
 			lozko = new THREE.Mesh(
@@ -962,7 +962,10 @@
 			movingDron.translateZ( moveDistance*5 );
 			}
 			if(pozZ==-1){
-			movingDron.translateZ( moveDistance*5 );
+			movingDron.translateZ( -moveDistance*5 );
+			}
+			if(pozZ==-2){
+			movingDron.translateZ( -moveDistance*12 );
 			}
 			
 			var originPoint = movingDron.position.clone();
@@ -1130,6 +1133,7 @@
 						}
 				}
 				else if(dron.position.z>=-138){
+					if(kolizjadron(0,0,-2)){
 						sleep(5).then(() => {
 							dron.position.z-=0.4;
 							movingDron.position.copy(dron.position);
@@ -1142,6 +1146,31 @@
 						movingDron.position.z+=1.1;
 							movingDron.position.y+=1;
 						}
+					} else if (dron.position.y<=-5){
+						sleep(5).then(() => {
+							dron.position.y+=0.4;
+							movingDron.position.copy(dron.position);
+						});
+						if(dron.position.y>=-5 && dron.position.y<=-4){
+						dron.position.y=-5;
+						movingDron.position.copy(dron.position);
+						movingDron.position.z+=1.1;
+						movingDron.position.y+=1;
+						}
+					}	else if(dron.position.y>=-4){
+						sleep(5).then(() => {
+							dron.position.y-=0.4;
+							movingDron.position.copy(dron.position);
+							movingDron.position.z+=1.1;
+							movingDron.position.y+=1;
+						});
+						if(dron.position.y<=-4 && dron.position.y>=-5){
+						dron.position.y=-5;
+						movingDron.position.copy(dron.position);
+						movingDron.position.z+=1.1;
+							movingDron.position.y+=1;
+						}
+				}
 				}
 				else if(dron.position.z<=-140){
 						sleep(5).then(() => {
