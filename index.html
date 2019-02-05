@@ -1061,7 +1061,7 @@
 			if(drone_wl==1){
 			//update kamery drona
 			var relativeCameraOffset = new THREE.Vector3(0,0,1);
-			var cameraOffset = dron.matrixWorld.multiplyVector3( relativeCameraOffset )
+			var cameraOffset = relativeCameraOffset.applyMatrix4( dron.matrix );
 			textureCamera.position.x = cameraOffset.x;
 			textureCamera.position.y = cameraOffset.y;
 			textureCamera.position.z = cameraOffset.z;
