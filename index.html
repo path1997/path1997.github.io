@@ -575,7 +575,7 @@
 
 		movingDron = new THREE.Mesh(
 			new THREE.CylinderGeometry(10,10,2,6),
-			new THREE.MeshStandardMaterial({color:0x3cc12a,  transparent:true, opacity:0, side: THREE.DoubleSide})
+			new THREE.MeshStandardMaterial({color: 0xff0000, wireframe:true,transparent:true, opacity:0, side: THREE.DoubleSide})
 		);
 		//movingDron.rotation.x=Math.PI;
 		
@@ -682,8 +682,8 @@
 		light3.position.x=-85;	
 		
 		movingCzlowiek = new THREE.Mesh(
-			new THREE.CubeGeometry(15,50,15),
-			new THREE.MeshStandardMaterial({color:0x3cc12a,  transparent:true, opacity:0, side: THREE.DoubleSide})
+			new THREE.CylinderGeometry(10,10,50,6),
+			new THREE.MeshStandardMaterial({color: 0xff0000, wireframe:true,transparent:true, opacity:0, side: THREE.DoubleSide})
 		);
 		
 		
