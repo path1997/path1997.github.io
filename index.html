@@ -56,97 +56,87 @@
 
     <script>
 	
-	var stats1 = new Stats();
-	stats1.domElement.style.position = 'absolute';
-	stats1.domElement.style.bottom = '0px';
-	stats1.domElement.style.zIndex = 100;
-	var container = document.getElementById( 'fps' );
-	container.appendChild( stats1.domElement );
-	
-	var drone_audio= document.getElementById( 'drone_aud' );
-	drone_audio.volume=0.3;
-	var drone_audi=0;
-	var drone_anim=0;
-	var keys = [];
-	var clock= null;
-	var arrowHr= null;
-	var arrowMin= null;
-	var arrowSec= null;
-	var timeHr= null;
-	var timeMin= null;
-	var timeSec= null;
-	var textureCamera;
-	var screenScene, screenCamera, firstRenderTarget, finalRenderTarget;
-	var drone_wl=0;
-	var klawisz_dron;
-	var klawisz_czlowiek;
-	
-	var collidableMeshList = [];
-	var collidableMeshList1 = [];
-	var arrowList = [];
-	var directionList = [];
-	var arrowList1 = [];
-	var directionList1 = [];
-		
-    document.addEventListener("keydown",(event) => {keys[event.which] = true});
-	document.addEventListener("keyup",  (event) => keys[event.which] = false)
-		
-	var WIDTH = window.innerWidth;
-	var HEIGHT = window.innerHeight;
+		//LICZNIK FPS
 
-	var renderer = new THREE.WebGLRenderer();
-	renderer.setPixelRatio( window.devicePixelRatio )
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	document.body.appendChild( renderer.domElement );
-
-	var scene = new THREE.Scene();
-
-	var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+		var stats1 = new Stats();
+		stats1.domElement.style.position = 'absolute';
+		stats1.domElement.style.bottom = '0px';
+		stats1.domElement.style.zIndex = 100;
+		var container = document.getElementById( 'fps' );
+		container.appendChild( stats1.domElement );
 		
+		//DEKLARACJA ZMIENNYCH
+		
+		var drone_audio= document.getElementById( 'drone_aud' );
+		drone_audio.volume=0.3;
+		var drone_audi=0;
+		var drone_anim=0;
+		var keys = [];
+		var clock= null;
+		var arrowHr= null;
+		var arrowMin= null;
+		var arrowSec= null;
+		var timeHr= null;
+		var timeMin= null;
+		var timeSec= null;
+		var textureCamera;
+		var screenScene, screenCamera, firstRenderTarget, finalRenderTarget;
+		var drone_wl=0;
+		var klawisz_dron;
+		var klawisz_czlowiek;
+		
+		var collidableMeshList = [];
+		var collidableMeshList1 = [];
+		var arrowList = [];
+		var directionList = [];
+		var arrowList1 = [];
+		var directionList1 = [];
 			
-	var scale = 0.3;
-	var mouseX = 0;
-	var mouseY = 0;
-	var myszka=1;
-	camera.rotation.order = "YXZ";
-	
-	document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-		
-	function onDocumentMouseDown( event ) {
-		event.preventDefault();
-		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-		document.addEventListener( 'mouseup', onDocumentMouseUp, false );
-	}
-	function onDocumentMouseMove( event ) {
-		var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-		var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-		camera.rotation.y -= movementX * 0.003;
-		camera.rotation.x -= movementY * 0.003;
-		//rotateOnAxis( new THREE.Vector3(0,1,0), -movementX*0.003);
-		czlowiek.rotation.y = camera.rotation.y;
-		//movingCzlowiek.rotateOnAxis( new THREE.Vector3(0,1,0), -movementY );
-		//camera.rotateOnAxis( new THREE.Vector3(0,1,0), -movementX * 0.003);
-		//czlowiek.rotation.copy(camera.rotation);
-		movingCzlowiek.rotation.y=camera.rotation.y;
-		
-	}
-	function onDocumentMouseUp() {
-		document.removeEventListener( 'mousemove', onDocumentMouseMove );
-		document.removeEventListener( 'mouseup', onDocumentMouseUp );
-	}
-	
+		document.addEventListener("keydown",(event) => {keys[event.which] = true});
+		document.addEventListener("keyup",  (event) => keys[event.which] = false)
 			
-		var ref = new THREE.CubeTextureLoader()
-			.setPath( 'textures/' )
-			.load( [
-				'fat-chance-in-hell_ft.jpg',
-				'fat-chance-in-hell_bk.jpg',
-				'fat-chance-in-hell_up.jpg',
-				'fat-chance-in-hell_dn.jpg',
-				'fat-chance-in-hell_rt.jpg',
-				'fat-chance-in-hell_lf.jpg'
-			] );
-		scene.background = ref;
+		var WIDTH = window.innerWidth;
+		var HEIGHT = window.innerHeight;
+
+		var renderer = new THREE.WebGLRenderer();
+		renderer.setPixelRatio( window.devicePixelRatio )
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		document.body.appendChild( renderer.domElement );
+
+		var scene = new THREE.Scene();
+
+		var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+			
+		//STEROWANIE MYSZKĄ
+		
+		var scale = 0.3;
+		var mouseX = 0;
+		var mouseY = 0;
+		var myszka=1;
+		camera.rotation.order = "YXZ";
+		
+		document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+			
+		function onDocumentMouseDown( event ) {
+			event.preventDefault();
+			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+			document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+		}
+		function onDocumentMouseMove( event ) {
+			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+			camera.rotation.y -= movementX * 0.003*Speed;
+			camera.rotation.x -= movementY * 0.003*Speed;
+			czlowiek.rotation.y = camera.rotation.y;
+			movingCzlowiek.rotation.y=camera.rotation.y;
+			
+		}
+		function onDocumentMouseUp() {
+			document.removeEventListener( 'mousemove', onDocumentMouseMove );
+			document.removeEventListener( 'mouseup', onDocumentMouseUp );
+		}
+	
+		//GRUPY
 		
 		var czlowiek =new THREE.Group();
 		var dron=new THREE.Group();
@@ -208,8 +198,8 @@
 		dom.add(sciana6);
 		collidableMeshList.push(sciana6);
 		collidableMeshList1.push(sciana6);
-		//WNĘTRZE
 		
+		//WNĘTRZE
 		
 		var szafa_texture = new THREE.TextureLoader().load( 'textures/szafa.jpg' )
 		var geometry = new THREE.CubeGeometry( 19.5, 80, 30 );
@@ -407,7 +397,6 @@
 		drzwi.position.y-=10;
 		drzwi.position.x=100;
 		dom.add(drzwi);
-		//collidableMeshList.push(drzwi);
 		
 		var geometry = new THREE.CubeGeometry( 4, 1, 4 );
 		var material = new THREE.MeshPhongMaterial( { color: 0x889999, side: THREE.DoubleSide } );
@@ -483,7 +472,6 @@
 		linia2.rotation.y=Math.PI/2;
 		linia2.scale.set(1.45, 1.3, 1.0);
 		biurko.add(linia2);
-		//collidableMeshList.push(linia2);
 		
 		var geometry = new THREE.CubeGeometry( 1, 2, 5 );
 		var material = new THREE.MeshPhongMaterial( { color: 0x889999, side: THREE.DoubleSide } );
@@ -516,7 +504,6 @@
 		okno.position.y=8;
 		okno.position.x=-99.5;
 		dom.add(okno);
-		//collidableMeshList.push(okno);
 		
 		var okno1_texture = new THREE.TextureLoader().load( 'textures/okno1.jpg' )
 		var geometry = new THREE.CubeGeometry( 1, 2, 60 );
@@ -525,9 +512,7 @@
 		okno1.position.z=0;
 		okno1.position.y=-17;
 		okno1.position.x=-99.45;
-		dom.add(okno1);
-		//collidableMeshList.push(okno1);
-		
+		dom.add(okno1);	
 		
 		//MODELE
 		
@@ -549,7 +534,6 @@
             dom.add( gltf.scene );
 			collidableMeshList.push(lozko);
 			collidableMeshList1.push(lozko);
-			//lozko.visible=false;
 			
         });
 		
@@ -564,22 +548,16 @@
 		);
 		
 			kwiatek.position.copy(gltf.scene.position);
-			//lozko.position.x+=49;
 			dom.add(kwiatek);
 			collidableMeshList.push(kwiatek);
 			collidableMeshList1.push(kwiatek);
-			//kwiatek.visible=false;
             dom.add( gltf.scene );
-			//collidableMeshList.push(gltf.scene);
         });
 
 		movingDron = new THREE.Mesh(
 			new THREE.CylinderGeometry(10,10,2,6),
 			new THREE.MeshStandardMaterial({color: 0xff0000, wireframe:true,transparent:true, opacity:0, side: THREE.DoubleSide})
-		);
-		//movingDron.rotation.x=Math.PI;
-		
-		
+		);	
 		
 		loader.load( 'models/dron/scene.gltf', function ( gltf ) {
 			gltf.scene.scale.set(0.9,0.9,0.9);
@@ -598,8 +576,6 @@
 		scene.add(dron);
 		scene.add(movingDron);
 		collidableMeshList1.push(movingDron);
-		//movingDron.visible=false;
-		
 		
 		loader.load( 'models/xbox/scene.gltf', function ( gltf ) {
 			gltf.scene.position.y-=55;
@@ -610,7 +586,6 @@
 			gltf.scene.position.x=-28;
 			gltf.scene.scale.set(0.8,0.8,0.8);
             dom.add( gltf.scene );
-			//collidableMeshList.push(gltf.scene);
         });
 
 		loader.load( 'models/monster/scene.gltf', function ( gltf ) {
@@ -619,7 +594,6 @@
 			gltf.scene.position.x=-5;
 			gltf.scene.scale.set(1.4,1.4,1.4);
             dom.add( gltf.scene );
-			//collidableMeshList.push(gltf.scene);
         });
 		
 		loader.load( 'models/kaseta/scene.gltf', function ( gltf ) {
@@ -629,7 +603,6 @@
 			gltf.scene.rotation.z=Math.PI;
 			gltf.scene.scale.set(0.3,0.3,0.3);
             dom.add( gltf.scene );
-			//collidableMeshList.push(gltf.scene);
         });
 		
 		loader.load( 'models/krzeslo/scene.gltf', function ( gltf ) {
@@ -643,14 +616,11 @@
 		);
 		
 			krzeslo.position.copy(gltf.scene.position);
-			//lozko.position.x+=49;
 			dom.add(krzeslo);
 			collidableMeshList.push(krzeslo);
 			collidableMeshList1.push(krzeslo);
-			//krzeslo.visible=false;
 			
             dom.add( gltf.scene );
-			//collidableMeshList.push(gltf.scene);
         });
 		
 		var lampa =new THREE.Group();
@@ -661,7 +631,6 @@
 			gltf.scene.rotation.y=-Math.PI/4;
 			gltf.scene.scale.set(6,6,6);
             lampa.add( gltf.scene );
-			//collidableMeshList.push(gltf.scene);
         });
 		scene.add(lampa);
 		
@@ -672,7 +641,6 @@
 			gltf.scene.rotation.y=Math.PI/2*3;
 			gltf.scene.scale.set(7,6,4);
             dom.add( gltf.scene );
-			//collidableMeshList.push(gltf.scene);
         });
 		
 		
@@ -693,7 +661,6 @@
 			gltf.scene.position.z=6;
 			gltf.scene.scale.set(27,27,27);
 			czlowiek.add( gltf.scene );
-			//collidableMeshList.push(gltf.scene);
 			
         });
 		scene.add(czlowiek);
@@ -701,10 +668,10 @@
 		movingCzlowiek.position.z+=5;
 		collidableMeshList.push(movingCzlowiek);
 		scene.add(movingCzlowiek);
-		//movingCzlowiek.visible=false;
 		camera.position.y+=14;
 		
-		//-------------zegar----------------------
+		//ZEGAR
+		
 		var zegar =new THREE.Group();
 		var clock = new THREE.Clock();
 		var zegar_texture = new THREE.TextureLoader().load( 'textures/zegar1.png' )
@@ -722,7 +689,8 @@
         stats.domElement.style.bottom = '0px';
         stats.domElement.style.zIndex = 10;
 
-        // dodanie przedzialek
+        //DODANIE PRZEDZIAŁEK
+		
         var iHours = 12;
         var mergedArrows = new THREE.Geometry();
         var extrudeOpts = {amount: 10, steps: 1, bevelSegments: 1, bevelSize: 1, bevelThickness:1};
@@ -744,7 +712,8 @@
           THREE.GeometryUtils.merge(mergedArrows, arrowGeom);
         }
 
-        //dodanie wskazówki sekundowej
+        //DODANIE WSKAZÓWKI SEKUNDOWEJ
+		
         handTo = 350;
         var arrowSecShape = new THREE.Shape();
         arrowSecShape.moveTo(-50, -5);
@@ -757,7 +726,8 @@
 		arrowSec.scale.set(0.02,0.02,0.02);
         zegar.add(this.arrowSec);
 
-        // dodanie wskazówki minutowej
+        //DODANIE WSKAZÓWKI MINUTOWEJ
+		
         var arrowMinShape = new THREE.Shape();
         arrowMinShape.moveTo(0, -5);
         arrowMinShape.lineTo(Math.cos(a) * handTo, Math.sin(a) * handTo - 5);
@@ -770,7 +740,8 @@
 		arrowMin.scale.set(0.02,0.02,0.02);
         zegar.add(this.arrowMin);
 
-        // dodanie wskazówki godzinnej
+        //DODANIE WSKAZÓWKI GODZINNEJ
+		
         handTo = 300;
         var arrowHrShape = new THREE.Shape();
         arrowHrShape.moveTo(0, -5);
@@ -820,6 +791,7 @@
 		}
 		
 		//GUI
+		
 		var Speed = 1;
 		var Speed_drone=1;
 		
@@ -939,7 +911,9 @@
 		var delta = clock.getDelta();
 		var moveDistance = 1*Speed_drone;
 		var rotateAngle = Math.PI / 2 * delta*Speed_drone; 
-	
+		
+		//WYKRYWANIE KOLIZJI DRONA
+		
 		function kolizjadron(pozX,pozY,pozZ){
 
 			var tempX=movingDron.position.x;
@@ -947,25 +921,25 @@
 			var tempZ=movingDron.position.z;
 			
 			if(pozX==1){
-			movingDron.translateX( moveDistance*5 );
+				movingDron.translateX( moveDistance*5 );
 			}
 			if(pozX==-1){
-			movingDron.translateX( -moveDistance*5 );
+				movingDron.translateX( -moveDistance*5 );
 			}
 			if(pozY==1){
-			movingDron.translateY( moveDistance*5 );
+				movingDron.translateY( moveDistance*5 );
 			}
 			if(pozY==-1){
-			movingDron.translateY( -moveDistance*5 );
+				movingDron.translateY( -moveDistance*5 );
 			}
 			if(pozZ==1){
-			movingDron.translateZ( moveDistance*5 );
+				movingDron.translateZ( moveDistance*5 );
 			}
 			if(pozZ==-1){
-			movingDron.translateZ( -moveDistance*5 );
+				movingDron.translateZ( -moveDistance*5 );
 			}
 			if(pozZ==-2){
-			movingDron.translateZ( -moveDistance*12 );
+				movingDron.translateZ( -moveDistance*12 );
 			}
 			
 			var originPoint = movingDron.position.clone();
@@ -989,26 +963,28 @@
 			return true;
 		}
 		
+		//WYKRYWANIE KOLIZJI CZŁOWIEKA
+		
 		function kolizjaczlowiek(pozX,pozZ){
 
 			var tempX=movingCzlowiek.position.x;
 			var tempZ=movingCzlowiek.position.z;
 			
 			if(pozX==1){
-			movingCzlowiek.position.x -= Math.sin(camera.rotation.y) * Speed;
-			movingCzlowiek.position.z -= Math.cos(camera.rotation.y) * Speed;
+				movingCzlowiek.position.x -= Math.sin(camera.rotation.y) * Speed;
+				movingCzlowiek.position.z -= Math.cos(camera.rotation.y) * Speed;
 			}
 			if(pozX==-1){
-			movingCzlowiek.position.x += Math.sin(camera.rotation.y) * Speed;
-			movingCzlowiek.position.z += Math.cos(camera.rotation.y) * Speed;
+				movingCzlowiek.position.x += Math.sin(camera.rotation.y) * Speed;
+				movingCzlowiek.position.z += Math.cos(camera.rotation.y) * Speed;
 			}
 			if(pozZ==1){
-			movingCzlowiek.position.x -= Math.sin(camera.rotation.y - Math.PI/2) * Speed;
-			movingCzlowiek.position.z -= Math.cos(camera.rotation.y - Math.PI/2) * Speed;
+				movingCzlowiek.position.x -= Math.sin(camera.rotation.y - Math.PI/2) * Speed;
+				movingCzlowiek.position.z -= Math.cos(camera.rotation.y - Math.PI/2) * Speed;
 			}
 			if(pozZ==-1){
-			movingCzlowiek.position.x -= Math.sin(camera.rotation.y + Math.PI/2) * Speed;
-			movingCzlowiek.position.z -= Math.cos(camera.rotation.y + Math.PI/2) * Speed;
+				movingCzlowiek.position.x -= Math.sin(camera.rotation.y + Math.PI/2) * Speed;
+				movingCzlowiek.position.z -= Math.cos(camera.rotation.y + Math.PI/2) * Speed;
 			}
 			
 			var originPoint = movingCzlowiek.position.clone();
@@ -1048,7 +1024,8 @@
 			timeMin = date.getMinutes();
 			timeHr = date.getHours();
 
-			// update zegarka
+			//UPDATE ZEGARKA
+			
 			var rotSec = timeSec * 2 * Math.PI / 60 - Math.PI/2;
 			arrowSec.rotation.z = -rotSec;
 
@@ -1058,19 +1035,21 @@
 			var rotHr = timeHr * 2 * Math.PI / 12 - Math.PI/2;
 			arrowHr.rotation.z = -rotHr;
 			
+			//UPDATE KAMERY DRONA
+			
 			if(drone_wl==1){
-			//update kamery drona
-			var relativeCameraOffset = new THREE.Vector3(0,0,1);
-			var cameraOffset = relativeCameraOffset.applyMatrix4( dron.matrix );
-			textureCamera.position.x = cameraOffset.x;
-			textureCamera.position.y = cameraOffset.y;
-			textureCamera.position.z = cameraOffset.z;
-			var relativeCameraLookOffset = new THREE.Vector3(0,0,-1);
-			var cameraLookOffset = relativeCameraLookOffset.applyMatrix4( dron.matrixWorld );
-			textureCamera.lookAt( cameraLookOffset );
+				var relativeCameraOffset = new THREE.Vector3(0,0,1);
+				var cameraOffset = relativeCameraOffset.applyMatrix4( dron.matrix );
+				textureCamera.position.x = cameraOffset.x;
+				textureCamera.position.y = cameraOffset.y;
+				textureCamera.position.z = cameraOffset.z;
+				var relativeCameraLookOffset = new THREE.Vector3(0,0,-1);
+				var cameraLookOffset = relativeCameraLookOffset.applyMatrix4( dron.matrixWorld );
+				textureCamera.lookAt( cameraLookOffset );
 			}
 			
 			//POWROT DRONA DO BAZY
+			
 			if(drone_wl==0){
 				if(dron.rotation.x>=0.12){
 						sleep(5).then(() => {
@@ -1278,6 +1257,7 @@
 				}
 				
 				//WYLACZENIE DZWIEKU I SMIGIEŁ PO WYLADOWANIU DRONA
+				
 				if(dron.position.z>=-141 && dron.position.z<=-137){
 					if(dron.position.y<=-5 && dron.position.y>=-9){
 						if(dron.position.x<=42 && dron.position.x>=38){
@@ -1307,15 +1287,16 @@
 		}
 		var pozycjaYcz=czlowiek.position.y;	
 		
+		//STEROWANIE
 		
 		var keyboard = function(){ 
-		var delta = clock.getDelta(); // seconds
-		var moveDistance = 1*Speed_drone; // 200 pixels per second
+		
+		var delta = clock.getDelta();
+		var moveDistance = 1*Speed_drone;
 		var rotateAngle = Math.PI / 2 * delta*Speed_drone; 
+		
 		if(keys[83] === true){
 			if(kolizjaczlowiek(0,-1) || klawisz_czlowiek!='s'){
-                //camera.position.z += Speed;
-				//czlowiek.position.z = camera.position.z;
 				camera.position.x += Math.sin(camera.rotation.y) * Speed;
 				camera.position.z += Math.cos(camera.rotation.y) * Speed;
 				movingCzlowiek.position.copy(camera.position);
@@ -1323,8 +1304,6 @@
 				czlowiek.position.copy(camera.position);
 				czlowiek.position.y-=14;
 				movingCzlowiek.position.y-=17;
-				//czlowiek.position.x+=1;
-				//czlowiek.position.z-=1;
 				movingCzlowiek.position.x+=1;
 				klawisz_czlowiek='s'
             }
@@ -1332,14 +1311,7 @@
 			
         else if(keys[87] === true){
             if(kolizjaczlowiek(0,1) || klawisz_czlowiek!='w'){
-				//camera.position.z -= Speed;
-				//czlowiek.position.z = camera.position.z;
-					//camera.translateZ( -moveDistance );
-					//movingCzlowiek.position.copy(dron.position);
-					//movingDron.position.z+=5;
-					//movingDron.position.y+=1;
 				klawisz_czlowiek='w';
-					//czlowiek.position.y=pozycjaYcz;
 				camera.position.x -= Math.sin(camera.rotation.y) * Speed;
 				camera.position.z -= Math.cos(camera.rotation.y) * Speed;
 				movingCzlowiek.position.copy(camera.position);
@@ -1347,8 +1319,6 @@
 				czlowiek.position.copy(camera.position);
 				czlowiek.position.y-=14;
 				movingCzlowiek.position.y-=17;
-				//czlowiek.position.x+=1;
-				//czlowiek.position.z+=1;
 				movingCzlowiek.position.x+=1;
 					
 				}
@@ -1357,17 +1327,13 @@
 			
        else if(keys[65] === true){
 			if(kolizjaczlowiek(-1,0) || klawisz_czlowiek!='a'){
-                //camera.position.x -= Speed;
-				//czlowiek.position.x = camera.position.x;
 				camera.position.x -= Math.sin(camera.rotation.y + Math.PI/2) * Speed;
 				camera.position.z -= Math.cos(camera.rotation.y + Math.PI/2) * Speed;
 				movingCzlowiek.position.copy(camera.position);
 				movingCzlowiek.position.z+=5;
 				czlowiek.position.copy(camera.position);
 				czlowiek.position.y-=14;
-				//czlowiek.position.z+=1;
 				movingCzlowiek.position.y-=17;
-				//czlowiek.position.x+=1;
 				movingCzlowiek.position.x+=1;
 				klawisz_czlowiek='a';
             }
@@ -1375,17 +1341,13 @@
     
 		else if(keys[68] === true){
             if(kolizjaczlowiek(1,0) || klawisz_czlowiek!='d'){
-                //camera.position.x += Speed;
-				//czlowiek.position.x = camera.position.x;
 				camera.position.x -= Math.sin(camera.rotation.y - Math.PI/2) * Speed;
 				camera.position.z -= Math.cos(camera.rotation.y - Math.PI/2) * Speed;
 				movingCzlowiek.position.copy(camera.position);
 				movingCzlowiek.position.z+=5;
 				czlowiek.position.copy(camera.position);
-				//czlowiek.position.z+=1;
 				czlowiek.position.y-=14;
 				movingCzlowiek.position.y-=17;
-				//czlowiek.position.x+=1;
 				movingCzlowiek.position.x+=1;
 				klawisz_czlowiek='d';
             }
@@ -1475,10 +1437,6 @@
 			if(drone_wl==1){
                dron.rotateOnAxis( new THREE.Vector3(0,1,0), rotateAngle);
 			   movingDron.rotation.copy(dron.rotation);
-			   //movingDron.position.copy(dron.position);
-				//movingDron.position.z+=1.1;
-				//movingDron.position.y+=1;
-			   //movingDron.rotation.x=Math.PI;
             }
 		}
 		
@@ -1486,10 +1444,6 @@
 			if(drone_wl==1){				
                 dron.rotateOnAxis( new THREE.Vector3(0,1,0), -rotateAngle);
 				 movingDron.rotation.copy(dron.rotation);
-				 //movingDron.position.copy(dron.position);
-				//movingDron.position.z+=1.1;
-				//movingDron.position.y+=1;
-				//movingDron.rotation.x=Math.PI;
 			}	
         }
 		
